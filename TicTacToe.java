@@ -28,7 +28,6 @@ public class TicTacToe {
        /* Scanner scan = new Scanner(System.in);
         System.out.println("Enter your placement(1-9)");
         int pos = scan.nextInt();
-
         System.out.println(pos);*/
 
         /*switch (pos) {
@@ -61,30 +60,34 @@ public class TicTacToe {
                 break;
         }*/
 
+        printBoard(tictacBoard);
+
         player1Move(tictacBoard);
 
-        // printBoard(tictacBoard);
+        player2Move(tictacBoard);
+
+
 
     }
 
     public static void printBoard(char[][] tictacBoard){
-
+        System.out.println();
         for(char[] row: tictacBoard){
             for (char c: row){
                 System.out.print(c);
             }
             System.out.println();
         }
-
+        System.out.println();
     }
 
     public static void updateBoard(int position, int player, char [][] tictacBoard) {
 
-        char character;
+        char character = ' ';
 
         if (player == 1) {
             character = 'X';
-        } else {
+        } else if (player == 2) {
             character = 'O';
         }
 
@@ -126,17 +129,39 @@ public class TicTacToe {
                 printBoard(tictacBoard);
                 break;
 
-                default: break;
+            default: break;
         }
     }
 
     public static void player1Move(char[][] tictacBoard) {
 
-        System.out.println("Please enter your move (1-9): ");
+        System.out.println("Player 1 enter your move (1-9): ");
+
         int move = input.nextInt();
-        updateBoard(move,1,tictacBoard);
 
         boolean result = isValidMove(move, tictacBoard);
+
+        updateBoard(move,1,tictacBoard);
+
+
+
+        while (!result){
+            System.out.println("Sorry! Invalid Move. Try again");
+            move = input.nextInt();
+            result = isValidMove(move, tictacBoard);
+        }
+        System.out.println("Player 1 moved at position " + move);
+        updateBoard(move, 1, tictacBoard);
+    }
+
+    public static void player2Move(char[][] tictacBoard) {
+
+        System.out.println("Player 2 enter your move (1-9): ");
+        int move = input.nextInt();
+
+        boolean result = isValidMove(move, tictacBoard);
+
+        updateBoard(move,2,tictacBoard);
 
         while (!result){
             System.out.println("Sorry! Invalid Move. Try again");
@@ -144,7 +169,7 @@ public class TicTacToe {
             result = isValidMove(move, tictacBoard);
         }
         System.out.println("Player moved at position " + move);
-        updateBoard(move, 1, tictacBoard);
+        updateBoard(move, 2, tictacBoard);
     }
 
 
@@ -153,8 +178,10 @@ public class TicTacToe {
         switch(move) {
             case 1:
                 if(tictacBoard[0][1] == '1') {
+                    System.out.println("true");
                     return true;
                 } else {
+                    System.out.println("false");
                     return false;
                 }
             case 2:
@@ -209,6 +236,43 @@ public class TicTacToe {
             default:
                 return false;
         }
+    }
+    
+    public static boolean checkBoardStatus(char [][] tictacBoard) {
+
+        // Horizontal Win
+        if (tictacBoard[0][1] == 'X' && tictacBoard[0][3] == 'X' && tictacBoard[0][5] == 'X') {
+            System.out.println("Player 1 Wins");
+            player1Score++;
+            return true;
+        }
+        if (tictacBoard[0][1] == 'O' && tictacBoard[0][3] == 'O' && tictacBoard[0][5] == 'O') {
+            System.out.println("Player 2 Wins");
+            player2Score++;
+            return true;
+        }
+        if (tictacBoard[2][1] == 'X' && tictacBoard[2][3] == 'X' && tictacBoard[2][5] == 'X') {
+            System.out.println("Player 2 Wins");
+            player2Score++;
+            return true;
+        }
+        if (tictacBoard[2][1] == 'X' && tictacBoard[2][3] == 'X' && tictacBoard[2][5] == 'X') {
+            System.out.println("Player 2 Wins");
+            player2Score++;
+            return true;
+        }
+        if (tictacBoard[0][1] == 'O' && tictacBoard[0][3] == 'O' && tictacBoard[0][5] == 'O') {
+            System.out.println("Player 2 Wins");
+            player2Score++;
+            return true;
+        }
+        if (tictacBoard[0][1] == 'O' && tictacBoard[0][3] == 'O' && tictacBoard[0][5] == 'O') {
+            System.out.println("Player 2 Wins");
+            player2Score++;
+            return true;
+        }
+
+
     }
 
 }
