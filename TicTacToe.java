@@ -5,71 +5,70 @@ import java.util.Scanner;
 public class TicTacToe {
 
     static Scanner input = new Scanner(System.in);
+    static int player1Score = 0;
+    static int player2Score = 0;
 
     public static void main(String[] args) {
 
-        /*char [][] emptyBoard = {
-                {' ', '|', ' ', '|', ' '},
-                {'-', '+', '-', '+', '-'},
-                {' ', '|', ' ', '|', ' '},
-                {'-', '+', '-', '+', '-'},
-                {' ', '|', ' ', '|', ' '}};*/
+        boolean gameOver = false;
+        boolean playAgain = true;
 
         char[][] tictacBoard = {
-                {'|','1', '|', '2', '|', '3', '|'},
-                {'-','-', '-', '-', '-', '-', '-'},
-                {'|','4', '|', '5', '|', '6', '|'},
-                {'-','-', '-', '-', '-', '-', '-'},
-                {'|','7', '|', '8', '|', '9', '|'}
-        };
-
-
-
-       /* Scanner scan = new Scanner(System.in);
-        System.out.println("Enter your placement(1-9)");
-        int pos = scan.nextInt();
-        System.out.println(pos);*/
-
-        /*switch (pos) {
-            case 1:
-                emptyBoard[0][1] = 'X';
-                break;
-            case 2:
-                emptyBoard[0][3] = 'X';
-                break;
-            case 3:
-                emptyBoard[0][6] = 'X';
-                break;
-            case 4:
-                emptyBoard[2][1] = 'X';
-                break;
-            case 5:
-                emptyBoard[2][3] = 'X';
-                break;
-            case 6:
-                emptyBoard[2][6] = 'X';
-                break;
-            case 7:
-                emptyBoard[4][1] = 'X';
-                break;
-            case 8:
-                emptyBoard[4][3] = 'X';
-                break;
-            case 9:
-                emptyBoard[4][6] = 'X';
-                break;
-        }*/
+                {'_','|','_','|','_'},
+                {'_', '|', '_','|','_'},
+                {' ','|',' ','|',' '}};
 
         printBoard(tictacBoard);
+        System.out.println("Welcome to Tic Tac Toe!!");
+        while(playAgain){
 
-        player1Move(tictacBoard);
+            while (!gameOver) {
 
-        player2Move(tictacBoard);
+                player1Move(tictacBoard);
+                gameOver = checkBoardStatus(tictacBoard);
+                if (gameOver){
+                    break;
+                }
+
+                player2Move(tictacBoard);
+                gameOver = checkBoardStatus(tictacBoard);
+                if(gameOver){
+                    break;
+                }
+            }
+            System.out.println("Player 1 Score: " +player1Score);
+            System.out.println("Player 2 Score: " +player2Score);
+            System.out.println("Would you like to play again? Y/N");
+            input.nextLine();
+            String result = input.nextLine().toUpperCase();
+
+            // Switch-sats för att avgöra om man vill spela igen.
+            switch (result){
+                case "Y":
+                    playAgain = true;
+                    System.out.println("Dope! Let's play again");
+                    resetTictacBoard(tictacBoard);
+                    gameOver = false;
+                    printBoard(tictacBoard);
+                    break;
+
+                case "N":
+                    playAgain = false;
+                    System.out.println("Thanks for playing");
+                    break;
+                default:
+                    break;
+            }
+
+
+        }
+
 
 
 
     }
 
+    // Metod för att printa spelbrädet
     public static void printBoard(char[][] tictacBoard){
         System.out.println();
         for(char[] row: tictacBoard){
@@ -81,6 +80,8 @@ public class TicTacToe {
         System.out.println();
     }
 
+
+    // Metod för att uppdatera spelbrädet med gjorda drag.
     public static void updateBoard(int position, int player, char [][] tictacBoard) {
 
         char character = ' ';
@@ -93,39 +94,39 @@ public class TicTacToe {
 
         switch(position) {
             case 1:
-                tictacBoard[0][1] = character;
+                tictacBoard[0][0] = character;
                 printBoard(tictacBoard);
                 break;
             case 2:
-                tictacBoard[0][3] = character;
+                tictacBoard[0][2] = character;
                 printBoard(tictacBoard);
                 break;
             case 3:
-                tictacBoard[0][5] = character;
+                tictacBoard[0][4] = character;
                 printBoard(tictacBoard);
                 break;
             case 4:
-                tictacBoard[2][1] = character;
+                tictacBoard[1][0] = character;
                 printBoard(tictacBoard);
                 break;
             case 5:
-                tictacBoard[2][3] = character;
+                tictacBoard[1][2] = character;
                 printBoard(tictacBoard);
                 break;
             case 6:
-                tictacBoard[2][5] = character;
+                tictacBoard[1][4] = character;
                 printBoard(tictacBoard);
                 break;
             case 7:
-                tictacBoard[4][1] = character;
+                tictacBoard[2][0] = character;
                 printBoard(tictacBoard);
                 break;
             case 8:
-                tictacBoard[4][3] = character;
+                tictacBoard[2][2] = character;
                 printBoard(tictacBoard);
                 break;
             case 9:
-                tictacBoard[4][5] = character;
+                tictacBoard[2][4] = character;
                 printBoard(tictacBoard);
                 break;
 
@@ -133,6 +134,7 @@ public class TicTacToe {
         }
     }
 
+    // Metod för att hantera drag gjorda av Player 1
     public static void player1Move(char[][] tictacBoard) {
 
         System.out.println("Player 1 enter your move (1-9): ");
@@ -143,8 +145,6 @@ public class TicTacToe {
 
         updateBoard(move,1,tictacBoard);
 
-
-
         while (!result){
             System.out.println("Sorry! Invalid Move. Try again");
             move = input.nextInt();
@@ -154,6 +154,74 @@ public class TicTacToe {
         updateBoard(move, 1, tictacBoard);
     }
 
+
+
+
+    // Metod för att kontrollera om valt drag är tillgängligt på spelbrädet.
+    public static boolean isValidMove(int move, char[][] tictacBoard) {
+
+        switch(move) {
+            case 1:
+                if(tictacBoard[0][0] == '_') {
+                    return true;
+                } else {
+                    return false;
+                }
+            case 2:
+                if(tictacBoard[0][2] == '_') {
+                    return true;
+                } else {
+                    return false;
+                }
+            case 3:
+                if(tictacBoard[0][4] == '_') {
+                    return true;
+                } else {
+                    return false;
+                }
+            case 4:
+                if(tictacBoard[1][0] == '_') {
+                    return true;
+                } else {
+                    return false;
+                }
+            case 5:
+                if(tictacBoard[1][2] == '_') {
+                    return true;
+                } else {
+                    return false;
+                }
+            case 6:
+                if(tictacBoard[1][4] == '_') {
+                    return true;
+                } else {
+                    return false;
+                }
+            case 7:
+                if(tictacBoard[2][0] == ' ') {
+                    return true;
+                } else {
+                    return false;
+                }
+            case 8:
+                if(tictacBoard[2][2] == ' ') {
+                    return true;
+                } else {
+                    return false;
+                }
+            case 9:
+                if(tictacBoard[2][4] == ' ') {
+                    return true;
+                } else {
+                    return false;
+                }
+
+            default:
+                return false;
+        }
+    }
+
+    // Metod för att hantera drag gjorda av Player 2
     public static void player2Move(char[][] tictacBoard) {
 
         System.out.println("Player 2 enter your move (1-9): ");
@@ -172,107 +240,119 @@ public class TicTacToe {
         updateBoard(move, 2, tictacBoard);
     }
 
-
-    public static boolean isValidMove(int move, char[][] tictacBoard) {
-
-        switch(move) {
-            case 1:
-                if(tictacBoard[0][1] == '1') {
-                    System.out.println("true");
-                    return true;
-                } else {
-                    System.out.println("false");
-                    return false;
-                }
-            case 2:
-                if(tictacBoard[0][3] == '2') {
-                    return true;
-                } else {
-                    return false;
-                }
-            case 3:
-                if(tictacBoard[0][5] == '3') {
-                    return true;
-                } else {
-                    return false;
-                }
-            case 4:
-                if(tictacBoard[2][1] == '4') {
-                    return true;
-                } else {
-                    return false;
-                }
-            case 5:
-                if(tictacBoard[2][3] == '5') {
-                    return true;
-                } else {
-                    return false;
-                }
-            case 6:
-                if(tictacBoard[2][5] == '6') {
-                    return true;
-                } else {
-                    return false;
-                }
-            case 7:
-                if(tictacBoard[4][1] == '7') {
-                    return true;
-                } else {
-                    return false;
-                }
-            case 8:
-                if(tictacBoard[4][3] == '8') {
-                    return true;
-                } else {
-                    return false;
-                }
-            case 9:
-                if(tictacBoard[4][5] == '9') {
-                    return true;
-                } else {
-                    return false;
-                }
-
-            default:
-                return false;
-        }
-    }
-    
+    // Metod för att kontrollera om någon vunnit.
     public static boolean checkBoardStatus(char [][] tictacBoard) {
 
-        // Horizontal Win
-        if (tictacBoard[0][1] == 'X' && tictacBoard[0][3] == 'X' && tictacBoard[0][5] == 'X') {
+        // Horisontella vinstlinjer
+        if (tictacBoard[0][0] == 'X' && tictacBoard[0][2] == 'X' && tictacBoard[0][4] == 'X') {
             System.out.println("Player 1 Wins");
             player1Score++;
             return true;
         }
-        if (tictacBoard[0][1] == 'O' && tictacBoard[0][3] == 'O' && tictacBoard[0][5] == 'O') {
+        if (tictacBoard[0][0] == 'O' && tictacBoard[0][2] == 'O' && tictacBoard[0][4] == 'O') {
             System.out.println("Player 2 Wins");
             player2Score++;
             return true;
         }
-        if (tictacBoard[2][1] == 'X' && tictacBoard[2][3] == 'X' && tictacBoard[2][5] == 'X') {
+        if (tictacBoard[1][0] == 'X' && tictacBoard[1][2] == 'X' && tictacBoard[1][4] == 'X') {
+            System.out.println("Player 1 Wins");
+            player1Score++;
+            return true;
+        }
+        if (tictacBoard[1][0] == 'O' && tictacBoard[1][2] == 'O' && tictacBoard[1][4] == 'O') {
             System.out.println("Player 2 Wins");
             player2Score++;
             return true;
         }
-        if (tictacBoard[2][1] == 'X' && tictacBoard[2][3] == 'X' && tictacBoard[2][5] == 'X') {
+        if (tictacBoard[2][0] == 'X' && tictacBoard[2][2] == 'X' && tictacBoard[2][4] == 'X') {
             System.out.println("Player 2 Wins");
-            player2Score++;
+            player1Score++;
             return true;
         }
-        if (tictacBoard[0][1] == 'O' && tictacBoard[0][3] == 'O' && tictacBoard[0][5] == 'O') {
-            System.out.println("Player 2 Wins");
-            player2Score++;
-            return true;
-        }
-        if (tictacBoard[0][1] == 'O' && tictacBoard[0][3] == 'O' && tictacBoard[0][5] == 'O') {
+        if (tictacBoard[2][0] == 'O' && tictacBoard[2][2] == 'O' && tictacBoard[2][4] == 'O') {
             System.out.println("Player 2 Wins");
             player2Score++;
             return true;
         }
 
+        // Vertikala vinstlinjer
+        if (tictacBoard[0][0] == 'X' && tictacBoard[1][0] == 'X' && tictacBoard[2][0] == 'X') {
+            System.out.println("Player 1 Wins");
+            player1Score++;
+            return true;
+        }
+        if (tictacBoard[0][0] == 'O' && tictacBoard[1][0] == 'O' && tictacBoard[2][0] == 'O') {
+            System.out.println("Player 2 Wins");
+            player2Score++;
+            return true;
+        }
+        if (tictacBoard[0][2] == 'X' && tictacBoard[1][2] == 'X' && tictacBoard[2][2] == 'X') {
+            System.out.println("Player 1 Wins");
+            player1Score++;
+            return true;
+        }
+        if (tictacBoard[0][2] == 'O' && tictacBoard[1][2] == 'O' && tictacBoard[2][2] == 'O') {
+            System.out.println("Player 2 Wins");
+            player2Score++;
+            return true;
+        }
+        if (tictacBoard[0][4] == 'X' && tictacBoard[1][4] == 'X' && tictacBoard[2][4] == 'X') {
+            System.out.println("Player 2 Wins");
+            player1Score++;
+            return true;
+        }
+        if (tictacBoard[0][4] == 'O' && tictacBoard[1][4] == 'O' && tictacBoard[2][4] == 'O') {
+            System.out.println("Player 2 Wins");
+            player2Score++;
+            return true;
+        }
 
+        // Diagonala vinstlinjer
+
+        if (tictacBoard[0][0] == 'X' && tictacBoard[1][2] == 'X' && tictacBoard[2][4] == 'X') {
+            System.out.println("Player 1 Wins");
+            player1Score++;
+            return true;
+        }
+        if (tictacBoard[0][0] == 'O' && tictacBoard[1][2] == 'O' && tictacBoard[2][4] == 'O') {
+            System.out.println("Player 2 Wins");
+            player2Score++;
+            return true;
+        }
+        if (tictacBoard[0][4] == 'X' && tictacBoard[1][2] == 'X' && tictacBoard[2][0] == 'X') {
+            System.out.println("Player 1 Wins");
+            player1Score++;
+            return true;
+        }
+        if (tictacBoard[0][4] == 'O' && tictacBoard[1][2] == 'O' && tictacBoard[2][0] == 'O') {
+            System.out.println("Player 2 Wins");
+            player2Score++;
+            return true;
+        }
+
+        // Kontrollerar om spelrundan blir lika.
+        if(tictacBoard[0][0] != '_' && tictacBoard[0][2] != '_' && tictacBoard[0][4] != '_' &&
+                tictacBoard[1][0] !='_'&& tictacBoard[1][2] != '_' && tictacBoard[1][4] != '_' &&
+                tictacBoard[2][0] != ' ' && tictacBoard[2][2] != ' ' && tictacBoard[2][4] != ' ') {
+            System.out.println("Its a tie");
+            return true;
+        }
+
+    return false;
+    }
+
+
+    // Metod för att starta om spelrundan och återställa spelbrädet.
+    public static void resetTictacBoard(char[][] tictacBoard) {
+        tictacBoard[0][0] = '_';
+        tictacBoard[0][2] = '_';
+        tictacBoard[0][4] = '_';
+        tictacBoard[1][0] = '_';
+        tictacBoard[1][2] = '_';
+        tictacBoard[1][4] = '_';
+        tictacBoard[2][0] = ' ';
+        tictacBoard[2][2] = ' ';
+        tictacBoard[2][4] = ' ';
     }
 
 }
